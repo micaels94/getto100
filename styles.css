@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Anonymous+Pro&family=Inter:wght@200;300&family=Montserrat:wght@100;400;500;700&family=Roboto+Mono:wght@500&display=swap');
+
+html{
+  background-color: #14213d;
+  height: 100vh;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+}
+
+#grid-container {
+  
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-gap: 5px;
+  margin: 0 auto;
+  border: 2px solid #fff;
+  padding: 15px;
+  border-radius: 15px;
+}
+.grid-cell {
+  width: 25px;
+  height: 25px;
+  border: 1px solid #ccc;
+  font-size: 18px;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #001d3d;
+  border-radius: 5px;
+  text-align: center;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.start-cell{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Roboto Mono', monospace;
+  background-color: #ffcc00;
+}
+
+.clicked-cell{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffcc00;
+
+}
+
+.goal {
+  background-color: #ffcc00; /* Set the background color for the goal cell */
+  color: black; 
+  /* Add other styling as needed */
+}
+
+.valid-move {
+  background-color: #aaffaa;/* Highlight valid moves */
+
+}
