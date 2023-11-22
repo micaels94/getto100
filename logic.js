@@ -10,49 +10,65 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+
+
     function handleCellClick(cell) {
-        console.log("Entering handleCellClick");
         if (!gameStarted) {
             startGame(cell);
-            console.log("Game Started");
         } else {
-            handleCellClickLogic(cell);
+            isSameCellClicked(cell);
         }
-        console.log("Exiting handleCellClick");
     }
 
-    function handleCellClickLogic(cell) {
-        if (isSameCellClicked(cell)) {
-            console.log("same cell clicked");
+    // function handleCellClickLogic(cell) {
+
+    //     console.log("entering handleCellClickLogic");
+    //     isSameCellClicked(cell);
+    //     console.log("exiting handleCellClickLogic");
+    // }
+
+    function isSameCellClicked(clickedCell) {
+        // Compare the innerText of the clicked cell with the last clicked cell
+        console.log("Clicked Cell:", clickedCell);
+        console.log("Last Clicked Cell:", lastClickedCell);
+
+        if (lastClickedCell === clickedCell) {
             // The user clicked in the same cell consecutively
-            // Clear the innerText and set background color to white
-            clearCell(cell);
-        } else if (!cellIsEmpty(cell) && !isCountExceeded()) {
-            console.log("This is a cell argument: " + cell)
-            updateGrid(cell, numCount);
-            currentPosition = numCount;
-            numCount += 1;
-            console.log("not if statement called");
+            // Toggle the display of the number or clear the cell
+            if (cellIsEmpty(clickedCell)) {
+                // If the cell is empty, display the number
+                numCount += 1; // Increment numCount
+                clickedCell.style.backgroundColor = "#ffcc00"
+                clickedCell.innerText = numCount;
+            } else {
+                // If the cell has a number, clear it
+                numCount -= 1
+                clearCell(clickedCell);
+            }
+            console.log("Same cell clicked");
+            return true;
         }
+
+         // Clear the last clicked cell
+        lastClickedCell = clickedCell; // Update the last clicked cell
+        console.log("Different cell clicked");
+        return false;
     }
 
     function cellIsEmpty(cell) {
         return cell.innerText === '';
     }
 
-    function isSameCellClicked(clickedCell) {
-        let cellClicked = parseInt(clickedCell.innerText);
-        console.log(cellClicked);
-    
-        // Compare the clicked cell with the last clicked cell by their content
-        if (lastClickedCell == cellClicked) {
-            numCount -= 1; // Decrement numCount by 1
-            return true;
-        }
-        return false;
+    function clearCell(cell) {
+        // Reset the cell to its original state
+        console.log("This is the clearCell");
+
+        cell.innerText = '';
+        cell.style.backgroundColor = 'white';
+        console.log("And this is the lastClickedCell after clearCell " + lastClickedCell);
     }
-    
-    function isCountExceeded() { // esta função está a funcionar
+
+    function isCountExceeded() {
         return numCount >= 101;
     }
 
@@ -62,22 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
         startingCell.classList.add('start-cell');
         lastClickedCell = startingCell; // Store the cell reference
         gameStarted = true; // Set gameStarted to true
-    }
-
-    function updateGrid(clickedCell, numCount) {
-        // Place the next number in the clicked cell
-        console.log("this is the number being incremented");
-        console.log(clickedCell)
-        clickedCell.innerText = numCount.toString();
-        clickedCell.style.backgroundColor = "#e9c46a";
-        lastClickedCell = clickedCell; // Update the last clicked cell
-    }
-console.log("This is the var lastClickedCell " + lastClickedCell)
-    function clearCell(cell) {
-        // Reset the cell to its original state
-        console.log("This is the clearCell");
-        cell.innerText = '';
-        cell.style.backgroundColor = 'white';
-        lastClickedCell = null; // Reset the last clicked cell
+        console.log("this is the lastClickedCell " + lastClickedCell);
     }
 });
