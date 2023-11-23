@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     let currentPosition;
     let gameStarted = false;
-    let numCount = 1;
+    let numCount = 98;
     let lastClickedCell; // Variable to store the last clicked cell
 
     document.querySelectorAll('.grid-cell').forEach(cell => {
@@ -18,7 +18,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!gameStarted) {
             startGame(cell);
         } else {
-            isSameCellClicked(cell);
+            if(numCount < 100){
+                isSameCellClicked(cell);
+            }else if(numCount === 100){
+                cell.style.backgroundColor = "#76c893"
+                isTheLastCell()
+            }
+            
         }
     }
 
@@ -50,6 +56,33 @@ document.addEventListener('DOMContentLoaded', function () {
         return false;
     }
 
+    function isTheLastCell(cell) {
+        console.log("entering isTheLastCell");
+    
+        
+            // Apply styling to the specific cell with the number 100
+            cell.style.backgroundColor = "#76c893";
+            cell.innerText = numCount
+    
+            // Hide all elements with the class "grid-container"
+            var gridContainers = document.getElementsByClassName("grid-container");
+            for (var i = 0; i < gridContainers.length; i++) {
+                gridContainers[i].style.display = "none";
+            }
+    
+            // Delay the display of the congratulations message by 3 seconds
+            setTimeout(function () {
+                // Show the first element with the class "congratulations"
+                var congratulationsElements = document.getElementsByClassName("congratulations");
+                if (congratulationsElements.length > 0) {
+                    congratulationsElements[0].style.display = "flex";
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+        
+    }
+    
+     
+    
     
 
     function cellIsEmpty(cell) {
