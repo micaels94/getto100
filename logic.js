@@ -1,3 +1,5 @@
+
+
 document.addEventListener('DOMContentLoaded', function () {
     let currentPosition;
     let gameStarted = false;
@@ -20,21 +22,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // function handleCellClickLogic(cell) {
-
-    //     console.log("entering handleCellClickLogic");
-    //     isSameCellClicked(cell);
-    //     console.log("exiting handleCellClickLogic");
-    // }
 
     function isSameCellClicked(clickedCell) {
         // Compare the innerText of the clicked cell with the last clicked cell
         console.log("Clicked Cell:", clickedCell);
         console.log("Last Clicked Cell:", lastClickedCell);
 
-        if (lastClickedCell === clickedCell) {
-            // The user clicked in the same cell consecutively
-            // Toggle the display of the number or clear the cell
+        
             if (cellIsEmpty(clickedCell)) {
                 // If the cell is empty, display the number
                 numCount += 1; // Increment numCount
@@ -42,12 +36,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 clickedCell.innerText = numCount;
             } else {
                 // If the cell has a number, clear it
-                numCount -= 1
+               
                 clearCell(clickedCell);
+                console.log("Same cell clicked");
+                return true;
             }
-            console.log("Same cell clicked");
-            return true;
-        }
+
+        
 
          // Clear the last clicked cell
         lastClickedCell = clickedCell; // Update the last clicked cell
@@ -55,29 +50,36 @@ document.addEventListener('DOMContentLoaded', function () {
         return false;
     }
 
+    
+
     function cellIsEmpty(cell) {
         return cell.innerText === '';
     }
 
     function clearCell(cell) {
-        // Reset the cell to its original state
+        // Reset the cell to its original state only if it's the last clicked cell
         console.log("This is the clearCell");
-
-        cell.innerText = '';
-        cell.style.backgroundColor = 'white';
+    
+        if (lastClickedCell === cell) {
+            numCount -= 1
+            cell.innerText = '';
+            cell.style.backgroundColor = 'white';
+            lastClickedCell = null; // Reset the last clicked cell
+            console.log("Cleared the cell");
+        } else {
+            console.log("Cannot clear this cell");
+        }
         console.log("And this is the lastClickedCell after clearCell " + lastClickedCell);
     }
-
-    function isCountExceeded() {
-        return numCount >= 101;
-    }
+    
 
     function startGame(startingCell) {
+        console.log("Game begins!")
         currentPosition = parseInt(startingCell.textContent, 10);
         startingCell.innerText = numCount;
         startingCell.classList.add('start-cell');
         lastClickedCell = startingCell; // Store the cell reference
         gameStarted = true; // Set gameStarted to true
-        console.log("this is the lastClickedCell " + lastClickedCell);
+        
     }
 });
