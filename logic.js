@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     let currentPosition;
     let gameStarted = false;
-    let numCount = 98;
+    let numCount = 1;
     let lastClickedCell; // Variable to store the last clicked cell
 
     document.querySelectorAll('.grid-cell').forEach(cell => {
@@ -18,13 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!gameStarted) {
             startGame(cell);
         } else {
-            if(numCount < 100){
-                isSameCellClicked(cell);
-            }else if(numCount === 100){
-                cell.style.backgroundColor = "#76c893"
-                isTheLastCell()
-            }
-            
+            isSameCellClicked(cell);
         }
     }
 
@@ -35,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("Last Clicked Cell:", lastClickedCell);
 
         
-            if (cellIsEmpty(clickedCell)) {
+            if (cellIsEmpty(clickedCell) && isValidMove(clickedCell)) {
                 // If the cell is empty, display the number
                 numCount += 1; // Increment numCount
                 clickedCell.style.backgroundColor = "#ffcc00"
@@ -56,33 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return false;
     }
 
-    function isTheLastCell(cell) {
-        console.log("entering isTheLastCell");
-    
-        
-            // Apply styling to the specific cell with the number 100
-            cell.style.backgroundColor = "#76c893";
-            cell.innerText = numCount
-    
-            // Hide all elements with the class "grid-container"
-            var gridContainers = document.getElementsByClassName("grid-container");
-            for (var i = 0; i < gridContainers.length; i++) {
-                gridContainers[i].style.display = "none";
-            }
-    
-            // Delay the display of the congratulations message by 3 seconds
-            setTimeout(function () {
-                // Show the first element with the class "congratulations"
-                var congratulationsElements = document.getElementsByClassName("congratulations");
-                if (congratulationsElements.length > 0) {
-                    congratulationsElements[0].style.display = "flex";
-                }
-            }, 3000); // 3000 milliseconds = 3 seconds
-        
-    }
-    
-     
-    
     
 
     function cellIsEmpty(cell) {
@@ -104,6 +71,32 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         console.log("And this is the lastClickedCell after clearCell " + lastClickedCell);
     }
+
+    function isValidMove(clickedCell) {
+        console.log("Entering isValidMove");
+        
+        // Get the row and column indices of the clicked cell
+        const clickedRow = parseInt(clickedCell.dataset.row);
+        const clickedCol = parseInt(clickedCell.dataset.col);
+    
+        // Get the row and column indices of the last clicked cell
+        const lastClickedRow = parseInt(lastClickedCell.dataset.row);
+        const lastClickedCol = parseInt(lastClickedCell.dataset.col);
+    
+        // Calculate the absolute difference in rows and columns
+        const rowDifference = Math.abs(clickedRow - lastClickedRow);
+        const colDifference = Math.abs(clickedCol - lastClickedCol);
+        
+        console.log("Move is valid:");
+
+        // Check if the move is valid (2 horizontally, 2 vertically, or 1 diagonally)
+        return (
+            (rowDifference === 0 && colDifference === 2) ||  // 2 horizontally
+            (rowDifference === 2 && colDifference === 0) ||  // 2 vertically
+            (rowDifference === 1 && colDifference === 1)    // 1 diagonally
+        );
+        
+    }
     
 
     function startGame(startingCell) {
@@ -111,8 +104,38 @@ document.addEventListener('DOMContentLoaded', function () {
         currentPosition = parseInt(startingCell.textContent, 10);
         startingCell.innerText = numCount;
         startingCell.classList.add('start-cell');
+        startingCell.style.backgroundColor = "#ffcc00"
         lastClickedCell = startingCell; // Store the cell reference
         gameStarted = true; // Set gameStarted to true
         
     }
+    document.getElementById('restart-btn').addEventListener('click', restartGame);
+
+    function restartGame() {
+        // Reset game variables
+        currentPosition = null;
+        gameStarted = false;
+        numCount = 1;
+        lastClickedCell = null;
+    
+        // Reset cell elements
+        document.querySelectorAll('.grid-cell').forEach(cell => {
+            cell.innerText = '';
+            cell.style.backgroundColor = 'white';
+            cell.classList.remove('start-cell');
+        });
+    
+        // Display the grid-container
+        var gridContainers = document.getElementsByClassName('grid-container');
+        for (var i = 0; i < gridContainers.length; i++) {
+            gridContainers[i].style.display = 'grid';
+        }
+    
+        // Hide the congratulations message
+        var congratulationsElements = document.getElementsByClassName('congratulations');
+        for (var i = 0; i < congratulationsElements.length; i++) {
+            congratulationsElements[i].style.display = 'none';
+        }
+    }
 });
+
