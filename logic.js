@@ -1,3 +1,5 @@
+
+
 document.addEventListener('DOMContentLoaded', function () {
     let currentPosition;
     let gameStarted = false;
@@ -14,10 +16,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function handleCellClick(cell) {
         if (!gameStarted) {
             startGame(cell);
-
         } else {
             if (lastClickedCell) {
-                resetHighlight()
+                highlightCells(cell)
                 isSameCellClicked(cell);
                 
             } else {
@@ -35,11 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (isValidMove(clickedCell)) {
                 // If the cell is empty and the move is valid, display the number
                 numCount += 1; // Increment numCount
-                highlightCells(clickedCell)
-
-                clickedCell.style.backgroundColor = "#ffcc00";
+                clickedCell.style.backgroundColor = "rgb(255,204,0)"; // #ffcc00
                 clickedCell.innerText = numCount;
-
             } else {
                 // If the move is not valid, clear the cell
                 clearCell(clickedCell);
@@ -115,11 +113,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return false;  // If the cell is not empty, return false
     }
+
+    function resetHighlight() {
+        // Clear the highlight only from cells that were not part of allowed moves
+        document.querySelectorAll('.grid-cell').forEach(cell => {
+            const currentColor = getComputedStyle(cell).backgroundColor;
+            if (currentColor !== 'rgb(255, 204, 0)') {
+                cell.style.backgroundColor = 'white'; // Set your desired default background color
+            }
+        });
+    }
+    
+
     function highlightCells(clickedCell) {
         const clickedIndex = Array.from(clickedCell.parentElement.children).indexOf(clickedCell);
+        const lastClickedIndex = Array.from(lastClickedCell.parentElement.children).indexOf(lastClickedCell);
+    
+        // Calculate the row and column indices based on the assumed grid layout (10 cells in a row)
         const clickedRow = Math.floor(clickedIndex / 10);
         const clickedCol = clickedIndex % 10;
-    
+        
+        resetHighlight()
+
         // Highlight cells that are 3 cells horizontally or vertically and 2 cells diagonally
         document.querySelectorAll('.grid-cell').forEach(cell => {
             const cellIndex = Array.from(cell.parentElement.children).indexOf(cell);
@@ -128,28 +143,22 @@ document.addEventListener('DOMContentLoaded', function () {
     
             const rowDifference = Math.abs(clickedRow - cellRow);
             const colDifference = Math.abs(clickedCol - cellCol);
-            
-            if (!lastClickedCell && (
+    
+            if (
                 (rowDifference === 3 && colDifference === 0) ||
                 (rowDifference === 0 && colDifference === 3) ||
                 (rowDifference === 2 && colDifference === 2)
-            )) {
-                // Highlight the clicked cell
-                clickedCell.style.backgroundColor = '#ffcc00'; // Set your desired highlight color
+            ) {
+                cell.style.backgroundColor = 'rgb(255, 235, 153)'; // Set your desired highlight color
             }
         });
     }
     
-    function resetHighlight() {
-        // Clear the highlight only from cells that were previously highlighted
-        document.querySelectorAll('.grid-cell').forEach(cell => {
-        if (cell.style.backgroundColor === 'rgb(252, 239, 180)') {
-                cell.style.backgroundColor = 'white';
-            }
-           
-        });
-    }
     
+    
+    
+    
+
     function startGame(startingCell) {
         console.log("Game begins!")
         currentPosition = parseInt(startingCell.textContent, 10);
