@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let gameStarted = false;
     let numCount = 1;
     let lastClickedCell; // Variable to store the last clicked cell
+    let confettiElements = [];
 
     document.querySelectorAll('.grid-cell').forEach(cell => {
         cell.addEventListener('click', function () {
@@ -18,6 +19,10 @@ document.addEventListener('DOMContentLoaded', function () {
             startGame(cell);
         } else {
             if (lastClickedCell) {
+                if (numCount === 99) {
+                    cell.innerText === "100"
+                    setTimeout(displayCongratulationsMessage, 1000);
+               }
                 highlightCells(cell)
                 isSameCellClicked(cell);
                 
@@ -26,7 +31,40 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-    
+// Modify the displayCongratulationsMessage function
+    function displayCongratulationsMessage() {
+        // Display the congratulations message section
+        const congratulationsSection = document.querySelector('.congratulations');
+        congratulationsSection.style.display = 'flex';
+        displayingCongratulationsMessage = true;
+        // Hide the grid-container
+        document.querySelector('.grid-container').style.display = 'none';
+
+        // Create and append confetti elements with random sizes and animation speeds
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.width = Math.floor(Math.random() * 20) + 'px'; // Random width between 10px and 30px
+            confetti.style.height = confetti.style.width;
+            confetti.style.backgroundColor = getRandomColor(); // Random color
+            confetti.style.left = Math.random() * window.innerWidth + 'px';
+            confetti.style.animationDuration = (Math.random() * 2 + 1) + 's'; // Random animation duration between 1s and 3s
+            document.body.appendChild(confetti);
+            confettiElements.push(confetti); // Add confetti element to the array
+        }
+    }
+
+
+    // Helper function to generate a random color
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
 
     function isSameCellClicked(clickedCell) {
         console.log("Clicked Cell:", clickedCell);
@@ -180,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
         gameStarted = false;
         numCount = 1;
         lastClickedCell = null;
-    
+        displayingCongratulationsMessage = false;
         // Reset cell elements
         document.querySelectorAll('.grid-cell').forEach(cell => {
             cell.innerText = '';
@@ -199,5 +237,11 @@ document.addEventListener('DOMContentLoaded', function () {
         for (var i = 0; i < congratulationsElements.length; i++) {
             congratulationsElements[i].style.display = 'none';
         }
+        confettiElements.forEach(confetti => {
+            confetti.remove();
+        });
+        
+        confettiElements = []
+
     }
 });

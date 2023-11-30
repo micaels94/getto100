@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Anonymous+Pro&family=Inter:wght@200;300&family=Montserrat:wght@100;400;500;700&family=Roboto+Mono:wght@500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 
 html{
   background-color: #14213d;
@@ -10,7 +9,7 @@ html{
   align-items: center;
 }
 
-#grid-container {
+.grid-container {
   
   display: grid;
   grid-template-columns: repeat(10, 1fr);
@@ -61,6 +60,21 @@ html{
 
 }
 
+.congratulations{
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Raleway', sans-serif;
+  animation: zoom ease 3s 1 normal forwards;
+  color: #fff;
+
+}
+
+h1{
+  font-size: 3rem;
+}
+
 #restart-btn{
   width: 70px;
   height: 30px;
@@ -75,8 +89,37 @@ html{
 
 }
 
-
-
 #restart-btn:hover {
   box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Add this inside your CSS or style tag in HTML */
+@keyframes confetti {
+  0% {
+      transform: translateY(0) rotate(0deg);
+  }
+  100% {
+      transform: translateY(-500px) rotate(360deg);
+  }
+}
+
+.confetti {
+  width: 40px;
+  height: 150px;
+  background-color: #f00; /* You can set the confetti color */
+  position: absolute;
+  opacity: 0.7;
+  animation: confetti 3s ease-out infinite;
+}
+
+
+
+@keyframes zoom {
+	0% {
+		transform: scaleX(0.4);
+	}
+
+	100% {
+		transform: scaleX(1);
+	}
 }
