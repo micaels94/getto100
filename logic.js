@@ -149,7 +149,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 (rowDifference === 0 && colDifference === 3) ||
                 (rowDifference === 2 && colDifference === 2)
             ) {
-                cell.style.backgroundColor = 'rgb(255, 235, 153)'; // Set your desired highlight color
+                if(cell.style.backgroundColor !== "rgb(255, 204, 0)"){
+                    cell.style.backgroundColor = 'rgb(255, 235, 153)'; // Set your desired highlight color
+                }
             }
         });
     }
@@ -167,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
         startingCell.style.backgroundColor = "#ffcc00"
         lastClickedCell = startingCell; // Store the cell reference
         gameStarted = true; // Set gameStarted to true
-        
+        highlightCells(startingCell)
     }
   
     document.getElementById('restart-btn').addEventListener('click', restartGame);
