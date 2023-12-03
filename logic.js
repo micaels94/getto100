@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     cell.innerText === "100"
                     setTimeout(displayCongratulationsMessage, 1000);
                }
-                highlightCells(cell)
                 isSameCellClicked(cell);
                 
             } else {
@@ -76,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 numCount += 1; // Increment numCount
                 clickedCell.style.backgroundColor = "rgb(255,204,0)"; // #ffcc00
                 clickedCell.innerText = numCount;
+
             } else {
                 // If the move is not valid, clear the cell
                 clearCell(clickedCell);
@@ -86,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Clear the last clicked cell
             lastClickedCell = clickedCell; // Update the last clicked cell
             console.log("Different cell clicked");
+            highlightCells(clickedCell)
+
             return false;
         } else {
             console.log("Cell is not empty or lastClickedCell is null");
@@ -143,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if ((rowDifference === 0 && colDifference === 3) ||  // 2 horizontally
                 (rowDifference === 3 && colDifference === 0) ||  // 2 vertically
                 (rowDifference === 2 && colDifference === 2)) {   // 1 diagonally
+                
                 return true;
             } else {
                 alert("Not a Valid Move! You must play in 2 cells difference horizontally or vertically or 1 cell diagonally!");
