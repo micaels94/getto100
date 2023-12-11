@@ -3,9 +3,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     let currentPosition;
     let gameStarted = false;
-    let numCount = 1;
+    let numCount = 91;
     let lastClickedCell; // Variable to store the last clicked cell
     let confettiElements = [];
+    let highlightedCells = false;
+
 
     document.querySelectorAll('.grid-cell').forEach(cell => {
         cell.addEventListener('click', function () {
@@ -15,70 +17,55 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function handleCellClick(cell) {
-        if (!gameStarted) {
-            startGame(cell);
-        } else {
-            if (lastClickedCell) {
-                if (numCount === 99) {
-                    cell.innerText === "100"
-                    setTimeout(displayCongratulationsMessage, 1000);
-               }
-                isSameCellClicked(cell);
-                
+        console.log("Entering handleCellClick")
+
+            if (!gameStarted) {
+                startGame(cell);
             } else {
-                console.error("lastClickedCell is null");
+               
+
+                if (highlightedCells) {
+                    if(!isSameCellClicked){
+                        resetHighlight(cell);
+                    }
+                    isSameCellClicked(cell);
+
+                    if(!highlightedCells && numCount < 99){
+                        
+                        setTimeout(function() {
+                            displayGameOverAnimation(numCount);
+                        }, 1000);
+                        
+                        return;
+                    }
+                }
+                if (cell.innerText === "100") {
+                    // Assuming you meant to assign the value, not compare equality
+                    setTimeout(displayCongratulationsMessage, 500);
+                }
+
             }
-        }
+        
     }
-// Modify the displayCongratulationsMessage function
-    function displayCongratulationsMessage() {
-        // Display the congratulations message section
-        const congratulationsSection = document.querySelector('.congratulations');
-        congratulationsSection.style.display = 'flex';
-        displayingCongratulationsMessage = true;
-        // Hide the grid-container
-        document.querySelector('.grid-container').style.display = 'none';
-
-        // Create and append confetti elements with random sizes and animation speeds
-        for (let i = 0; i < 50; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.style.width = Math.floor(Math.random() * 20) + 'px'; // Random width between 10px and 30px
-            confetti.style.height = confetti.style.width;
-            confetti.style.backgroundColor = getRandomColor(); // Random color
-            confetti.style.left = Math.random() * window.innerWidth + 'px';
-            confetti.style.animationDuration = (Math.random() * 2 + 1) + 's'; // Random animation duration between 1s and 3s
-            document.body.appendChild(confetti);
-            confettiElements.push(confetti); // Add confetti element to the array
-        }
-    }
-
-
-    // Helper function to generate a random color
-    function getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
-
+    
 
     function isSameCellClicked(clickedCell) {
         console.log("Clicked Cell:", clickedCell);
         console.log("Last Clicked Cell:", lastClickedCell);
-    
+
+
         if (cellIsEmpty(clickedCell) && lastClickedCell) {
             if (isValidMove(clickedCell)) {
+                resetHighlight()
                 // If the cell is empty and the move is valid, display the number
                 numCount += 1; // Increment numCount
                 clickedCell.style.backgroundColor = "rgb(255,204,0)"; // #ffcc00
                 clickedCell.innerText = numCount;
-
+                highlightCells(clickedCell);
+    
             } else {
-                // If the move is not valid, clear the cell
-                clearCell(clickedCell);
+              
+                
                 console.log("Not a valid move");
                 return false;
             }
@@ -86,16 +73,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // Clear the last clicked cell
             lastClickedCell = clickedCell; // Update the last clicked cell
             console.log("Different cell clicked");
-            highlightCells(clickedCell)
-
+    
             return false;
         } else {
             console.log("Cell is not empty or lastClickedCell is null");
             return true; // Return true to prevent further execution
         }
     }
-    
-
     
 
 
@@ -105,19 +89,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-    function clearCell(cell) {
-        // Reset the cell to its original state only if it's the last clicked cell
-        console.log("This is the clearCell");
-    
-        if (lastClickedCell === cell) {
-            numCount -= 1
-            cell.innerText = '';
-            cell.style.backgroundColor = 'white';
-            lastClickedCell = null; // Reset the last clicked cell
-            console.log("Cleared the cell");
-        }
-        console.log("And this is the lastClickedCell after clearCell " + lastClickedCell);
-    }
 
     function isValidMove(clickedCell) {
         console.log("Entering isValidMove");
@@ -156,17 +127,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function resetHighlight() {
-        // Clear the highlight only from cells that were not part of allowed moves
-        document.querySelectorAll('.grid-cell').forEach(cell => {
-            const currentColor = getComputedStyle(cell).backgroundColor;
-            if (currentColor !== 'rgb(255, 204, 0)') {
-                cell.style.backgroundColor = 'white'; // Set your desired default background color
-            }
-        });
+        // Check if there are allowed moves
+        
+            // Clear the highlight from cells that were not part of allowed moves
+            document.querySelectorAll('.grid-cell').forEach(cell => {
+                const currentColor = getComputedStyle(cell).backgroundColor;
+                if (currentColor !== 'rgb(255, 204, 0)') {
+                    cell.style.backgroundColor = 'white'; // Set your desired default background color
+                }
+            });
+    
+        // Clear the highlightedCells set outside of the else block
+        highlightedCells = false;
     }
     
-
+    
     function highlightCells(clickedCell) {
+        console.log("Entering highlightCells")
+
         const clickedIndex = Array.from(clickedCell.parentElement.children).indexOf(clickedCell);
         const lastClickedIndex = Array.from(lastClickedCell.parentElement.children).indexOf(lastClickedCell);
     
@@ -174,7 +152,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const clickedRow = Math.floor(clickedIndex / 10);
         const clickedCol = clickedIndex % 10;
         
-        resetHighlight()
+        // se nenhuma das celulas estiver da cor que queremos não fazer nada 
+        // se o jogo ainda não começou não fazer nada otherwise resetHighlight()
 
         // Highlight cells that are 3 cells horizontally or vertically and 2 cells diagonally
         document.querySelectorAll('.grid-cell').forEach(cell => {
@@ -192,13 +171,13 @@ document.addEventListener('DOMContentLoaded', function () {
             ) {
                 if(cell.style.backgroundColor !== "rgb(255, 204, 0)"){
                     cell.style.backgroundColor = 'rgb(255, 235, 153)'; // Set your desired highlight color
+                    highlightedCells = true;
                 }
             }
         });
+        console.log("exiting highlightCells")
+
     }
-    
-    
-    
     
     
 
@@ -214,7 +193,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   
     document.getElementById('restart-btn').addEventListener('click', restartGame);
-
     function restartGame() {
         // Reset game variables
         currentPosition = null;
@@ -222,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
         numCount = 1;
         lastClickedCell = null;
         displayingCongratulationsMessage = false;
+    
         // Reset cell elements
         document.querySelectorAll('.grid-cell').forEach(cell => {
             cell.innerText = '';
@@ -240,11 +219,80 @@ document.addEventListener('DOMContentLoaded', function () {
         for (var i = 0; i < congratulationsElements.length; i++) {
             congratulationsElements[i].style.display = 'none';
         }
+    
+        // Show the restart button
+        const restartBtn = document.getElementById("restart-btn");
+        restartBtn.style.display = 'block';
+    
+        // Hide the game-over animation
+        const gameOverAnimation = document.querySelector('.game-over-animation');
+        gameOverAnimation.style.display = 'none';
+    
         confettiElements.forEach(confetti => {
             confetti.remove();
         });
-        
-        confettiElements = []
-
+    
+        confettiElements = [];
     }
+    
+
+    // Modify the displayCongratulationsMessage function
+    function displayCongratulationsMessage() {
+        // Display the congratulations message section
+        const congratulationsSection = document.querySelector('.congratulations');
+        congratulationsSection.style.display = 'flex';
+        displayingCongratulationsMessage = true;
+        // Hide the grid-container
+        document.querySelector('.grid-container').style.display = 'none';
+
+        // Create and append confetti elements with random sizes and animation speeds
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.width = Math.floor(Math.random() * 20) + 'px'; // Random width between 10px and 30px
+            confetti.style.height = confetti.style.width;
+            confetti.style.backgroundColor = getRandomColor(); // Random color
+            confetti.style.left = Math.random() * window.innerWidth + 'px';
+            confetti.style.animationDuration = (Math.random() * 2 + 1) + 's'; // Random animation duration between 1s and 3s
+            document.body.appendChild(confetti);
+            confettiElements.push(confetti); // Add confetti element to the array
+        }
+    }
+
+
+    // Helper function to generate a random color
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    function displayGameOverAnimation(lostNumber) {
+        // Hide the grid-container
+        document.querySelector('.grid-container').style.display = 'none';
+    
+        // Show the game-over animation element
+        const gameOverAnimation = document.querySelector('.game-over-animation');
+        gameOverAnimation.style.display = 'flex';
+    
+        // Update the lostNumber in the HTML
+        const lostNumberinHtml = document.getElementById("lost-number");
+        lostNumberinHtml.innerHTML = lostNumber;
+    
+        // Hide the restart button
+        const hideRestartBtn = document.getElementById("restart-btn");
+        hideRestartBtn.style.display = 'none';
+    
+        // Add event listener to play-again button
+        const playAgainBtn = document.getElementById("play-again-btn");
+        playAgainBtn.addEventListener("click", function () {
+            restartGame();
+            // Additional logic if needed
+        });
+    }
+    
+    
 });
