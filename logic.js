@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     let currentPosition;
     let gameStarted = false;
-    let numCount = 91;
+    let numCount = 1;
     let lastClickedCell; // Variable to store the last clicked cell
     let confettiElements = [];
     let highlightedCells = false;
@@ -119,12 +119,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 return true;
             } else {
-                alert("Not a Valid Move! You must play in 2 cells difference horizontally or vertically or 1 cell diagonally!");
-                return false;
+               errorClickedCell(clickedCell)
+               return false;
             }
         }
-        return false;  // If the cell is not empty, return false
+         // If the cell is not empty, return false
     }
+                          
+function errorClickedCell(cell) {
+    cell.style.backgroundColor = "#f27059";
+
+    // Set a timeout to reset the color after 500 milliseconds
+    setTimeout(function() {
+        cell.style.backgroundColor = 'white'; // Set your desired default background color
+    }, 500);
+}                
 
     function resetHighlight() {
         // Check if there are allowed moves
@@ -293,6 +302,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // Additional logic if needed
         });
     }
-    
+    function hideInstructions() {
+        document.getElementById("instructions").style.display = "none";
+    }
+
+    document.getElementById("ok-btn").addEventListener("click", hideInstructions);
+
     
 });
